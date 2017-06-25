@@ -1,5 +1,8 @@
-# Created by .ignore support plugin (hsz.mobi)
 .idea
 .vscode
 *.pyc
 app.py
+package.json
+npm-debug.log
+__pycache__
+node_modules

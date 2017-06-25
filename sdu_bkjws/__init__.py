@@ -22,7 +22,6 @@ class SduBkjws(object):
         }
         r6 = s.post('http://bkjws.sdu.edu.cn/b/ajaxLogin', data=data)
         if r6.text == '"success"':
-            requests.utils.add_dict_to_cookiejar(s.cookies, data)
             return s
         else:
             return False
