@@ -1,5 +1,5 @@
-<a name="0.0.1"></a>
-## 0.0.1 (2017-06-26)
+<a name="0.1.0"></a>
+# [0.1.0](https://github.com/Trim21/sdu_bkjws/compare/1add936...v0.1.0) (2017-06-26)
 
 
 ### Bug Fixes
