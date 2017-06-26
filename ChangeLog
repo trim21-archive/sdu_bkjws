@@ -1,6 +1,8 @@
 CHANGES
 =======
 
+* chore(changelog): add a changelog from git commit
+* build: build setup
 * chore(License): GPL v3
 * docs(readme): add done
 * feat(past score): new api to get past score
@@ -11,31 +13,4 @@ CHANGES
 * docs(lesson): SduBkjws.get\_lesson() and Sdubkjws.lessons
 * docs(changelog): add changelog
 * feat(get lesson): add get\_lesson() and .lessons
-* update readme
-* update readme
-* 添加了考试安排查询的请求和回复数据分析
-* 抽取登录和抓取页面的模块
-* rm unrelative files
-* Update readme.md
-* change 2016 to 2017
-* add anylize
-* update index
-* update readme and add an index
-* flase debug
-* 加了个index.html,生成连接
-* update readme
-* typo fix
-* change \n to \r\n in response
-* update response headers
-* update .gitignore
-* redict index to github
-* remove useless print
-* update dockerfile
-* update readme
-* bug fix
-* bug fix
-* 删除IDE配置文件
-* 更新代码细节
-* 添加dockerfile和配置,可以直接构建镜像
-* add readme
 * init
