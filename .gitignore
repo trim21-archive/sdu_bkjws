@@ -2,10 +2,10 @@
 .vscode
 *.pyc
 app.py
-package.json
 npm-debug.log
 __pycache__
 node_modules
 build/
 dist/
 sdu_bkjws.egg-info/
+package-lock.json
