@@ -115,3 +115,18 @@ class SduBkjws(object):
             return self._raw_past_score
         else:
             raise Exception(response, 'unexpected error please create a issue on GitHub')
+
+    @_keep_live
+    def get_past_score(self):
+        """
+        :type: list
+        :return: 
+        """
+
+        response = self.get_raw_past_score()
+        score_list = response['object']['aaData']
+        # parsed_list = []
+        # for obj in score_list:
+        #     parsed_list.append({})
+        # print(score_list[1:3])
+        return score_list
