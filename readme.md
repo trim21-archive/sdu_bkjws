@@ -2,5 +2,7 @@
 
 (似乎清华用的也是这个系统)
 
-todo:
-- everything except login and get lessons
+done:
+- login
+- lesson
+- past score
