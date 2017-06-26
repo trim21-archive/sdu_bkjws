@@ -9,3 +9,4 @@ build/
 dist/
 sdu_bkjws.egg-info/
 package-lock.json
+.eggs/
