@@ -1,6 +1,18 @@
+import json
 from bs4 import BeautifulSoup
 import requests
 import time
+from urllib.parse import urlencode
+
+
+def _keep_live(fn):
+    def wrapper(self, *args, **kwargs):
+        if time.time() - self.last_connect > 15 * 60:
+            self.session = self.login()
+            self.last_connect = time.time()
+        return fn(self, *args, **kwargs)
+
+    return wrapper
 
 
 class SduBkjws(object):
@@ -25,16 +37,8 @@ class SduBkjws(object):
         else:
             raise Exception('username or password error')
 
-    def keep_live(fn):
-        def wrapper(self, *args, **kwargs):
-            if time.time() - self.last_connect > 15 * 60:
-                self.session = self.login()
-                self.last_connect = time.time()
-            return fn(self, *args, **kwargs)
-        return wrapper
-
     # use session to get lesson html
-    @keep_live
+    @_keep_live
     def get_lesson_html(self):
         s = self.session
         if s:
