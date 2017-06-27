@@ -17,7 +17,7 @@ def _keep_live(fn):
 
 
 class SduBkjws(object):
-    def __init__(self, student_id: str, password: str):
+    def __init__(self, student_id, password):
         self.student_id = student_id
         self.password = password
         self.login()
@@ -89,19 +89,30 @@ class SduBkjws(object):
         """
         echo = random.randint(1, 9)
         data = {"aoData": [{"name": "sEcho", "value": echo}, {"name": "iColumns", "value": 10},
-                           {"name": "sColumns", "value": ""}, {"name": "iDisplayStart", "value": 0},
+                           {"name": "sColumns", "value": ""}, {
+                               "name": "iDisplayStart", "value": 0},
                            # {"name": "iDisplayLength", "value": 70},
                            {"name": "mDataProp_0", "value": "xnxq"},
-                           {"name": "mDataProp_1", "value": "kch"}, {"name": "mDataProp_2", "value": "kcm"},
-                           {"name": "mDataProp_3", "value": "kxh"}, {"name": "mDataProp_4", "value": "xf"},
-                           {"name": "mDataProp_5", "value": "kssj"}, {"name": "mDataProp_6", "value": "kscjView"},
-                           {"name": "mDataProp_7", "value": "wfzjd"}, {"name": "mDataProp_8", "value": "wfzdj"},
-                           {"name": "mDataProp_9", "value": "kcsx"}, {"name": "iSortCol_0", "value": 5},
-                           {"name": "sSortDir_0", "value": "desc"}, {"name": "iSortingCols", "value": 1},
-                           {"name": "bSortable_0", "value": False}, {"name": "bSortable_1", "value": False},
-                           {"name": "bSortable_2", "value": False}, {"name": "bSortable_3", "value": False},
-                           {"name": "bSortable_4", "value": False}, {"name": "bSortable_5", "value": True},
-                           {"name": "bSortable_6", "value": False}, {"name": "bSortable_7", "value": False},
+                           {"name": "mDataProp_1", "value": "kch"}, {
+                               "name": "mDataProp_2", "value": "kcm"},
+                           {"name": "mDataProp_3", "value": "kxh"}, {
+                               "name": "mDataProp_4", "value": "xf"},
+                           {"name": "mDataProp_5", "value": "kssj"}, {
+                               "name": "mDataProp_6", "value": "kscjView"},
+                           {"name": "mDataProp_7", "value": "wfzjd"}, {
+                               "name": "mDataProp_8", "value": "wfzdj"},
+                           {"name": "mDataProp_9", "value": "kcsx"}, {
+                               "name": "iSortCol_0", "value": 5},
+                           {"name": "sSortDir_0", "value": "desc"}, {
+                               "name": "iSortingCols", "value": 1},
+                           {"name": "bSortable_0", "value": False}, {
+                               "name": "bSortable_1", "value": False},
+                           {"name": "bSortable_2", "value": False}, {
+                               "name": "bSortable_3", "value": False},
+                           {"name": "bSortable_4", "value": False}, {
+                               "name": "bSortable_5", "value": True},
+                           {"name": "bSortable_6", "value": False}, {
+                               "name": "bSortable_7", "value": False},
                            {"name": "bSortable_8", "value": False}, {"name": "bSortable_9", "value": False}]}
 
         string = urlencode(data)
@@ -114,7 +125,8 @@ class SduBkjws(object):
             self._raw_past_score = response
             return self._raw_past_score
         else:
-            raise Exception(response, 'unexpected error please create a issue on GitHub')
+            raise Exception(
+                response, 'unexpected error please create a issue on GitHub')
 
     @_keep_live
     def get_past_score(self):
