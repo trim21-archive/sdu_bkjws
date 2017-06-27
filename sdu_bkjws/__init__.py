@@ -85,7 +85,7 @@ class SduBkjws(object):
     def get_raw_past_score(self):
         """
         :type: dict
-        :return: 
+        :return:
         """
         echo = random.randint(1, 9)
         data = {"aoData": [{"name": "sEcho", "value": echo}, {"name": "iColumns", "value": 10},
@@ -120,13 +120,9 @@ class SduBkjws(object):
     def get_past_score(self):
         """
         :type: list
-        :return: 
+        :return:
         """
 
         response = self.get_raw_past_score()
         score_list = response['object']['aaData']
-        # parsed_list = []
-        # for obj in score_list:
-        #     parsed_list.append({})
-        # print(score_list[1:3])
         return score_list
