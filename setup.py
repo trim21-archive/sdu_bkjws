@@ -3,13 +3,20 @@ from pip.req import parse_requirements
 import os
 from setuptools import Command
 import sys
+<<<<<<< HEAD
 import json
+=======
+>>>>>>> build(script): some script to build
 
 
 def release(args):
     print(args)
     version = args[0].split('.')
     version = "{}.{}.{}".format(version[0], version[1], version[2])
+<<<<<<< HEAD
+=======
+    import json
+>>>>>>> build(script): some script to build
     with open('./package.json', 'r+', encoding='utf-8') as f:
         package = json.load(f)
         package['version'] = version
