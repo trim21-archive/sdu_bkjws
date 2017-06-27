@@ -3,20 +3,13 @@ from pip.req import parse_requirements
 import os
 from setuptools import Command
 import sys
-<<<<<<< HEAD
 import json
-=======
->>>>>>> build(script): some script to build
 
 
 def release(args):
     print(args)
     version = args[0].split('.')
     version = "{}.{}.{}".format(version[0], version[1], version[2])
-<<<<<<< HEAD
-=======
-    import json
->>>>>>> build(script): some script to build
     with open('./package.json', 'r+', encoding='utf-8') as f:
         package = json.load(f)
         package['version'] = version
@@ -44,27 +37,18 @@ for cmd, value in cmds.items():
             value(sys.argv[2:])
         exit(0)
 
-<<<<<<< HEAD
 with open('./package.json', 'r', encoding='utf-8') as f:
     version = json.load(f)['version']
 print(version)
 setup(name='sdu_bkjws',
       version=version,
-=======
-setup(name='sdu_bkjws',
-      version='0.1.0',
->>>>>>> build(script): some script to build
       url='https://github.com/Trim21/sdu_bkjws',
       platforms=['any'],
       license='GPLv3',
       author='Trim21',
       author_email='trim21me@gmail.com',
       description='sdu bkjws libary',
-<<<<<<< HEAD
       packages=find_packages(),
-=======
-      packages=find_packages('sdu_bkjws', exclude=['tests']),
->>>>>>> build(script): some script to build
       long_description=open('readme.md', 'r', encoding='utf-8').read(),
       zip_safe=True,
       install_requires=open('requirements.txt', 'r',
