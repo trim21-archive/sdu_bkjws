@@ -27,7 +27,7 @@ setup(name='sdu_bkjws',
 
       packages=find_packages('sdu_bkjws', exclude=['tests']),
 
-      long_description=open('README.md', 'r', encoding='utf-8').read(),
+      long_description=open('readme.md', 'r', encoding='utf-8').read(),
 
       zip_safe=True,
       setup_requires=['pbr'],
