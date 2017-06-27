@@ -1,10 +1,11 @@
 <a name="0.0.1"></a>
-## 0.0.1 (2017-06-26)
+## 0.0.1 (2017-06-27)
 
 
 ### Bug Fixes
 
 * **session:** fix autofresh error ([47ab5d7](https://github.com/Trim21/sdu_bkjws/commit/47ab5d7))
+* **setup:** File name case insensitive in windows ([baa2237](https://github.com/Trim21/sdu_bkjws/commit/baa2237))
 
 
 ### Features
