@@ -13,4 +13,4 @@ env:
     - TRAVIS_CI=TRAVIS_CI
 
 script:
-    # - python -m unittest discover
+    - python -c 'import sdu_bkjws'
