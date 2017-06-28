@@ -86,7 +86,9 @@ class SduBkjws(object):
         if hasattr(self, '_detail'):
             return self._detail
         else:
-            raise Exception('run get_detail() to init first')
+            self.get_detail()
+            return self._detail
+            # raise Exception('run get_detail() to init first')
 
     @_keep_live
     def get_detail(self):
@@ -198,51 +200,27 @@ class SduBkjws(object):
             return True
         else:
             return False
-            #
-            # @_keep_live
-            # def get_raw_exam_schedule(self):
-            #     """
-            #     :type: dict
-            #     :return:
-            #     """
-            #     echo = random.randint(1, 9)
-            #     data = {"aoData": [{"name": "sEcho", "value": echo}, {"name": "iColumns", "value": 10},
-            #                        {"name": "sColumns", "value": ""}, {"name": "iDisplayStart", "value": 0},
-            #                        {"name": "mDataProp_0", "value": "xnxq"}, {"name": "mDataProp_1", "value": "kch"},
-            #                        {"name": "mDataProp_2", "value": "kcm"}, {"name": "mDataProp_3", "value": "kxh"},
-            #                        {"name": "mDataProp_4", "value": "xf"}, {"name": "mDataProp_5", "value": "kssj"},
-            #                        {"name": "mDataProp_6", "value": "kscjView"}, {"name": "mDataProp_7", "value": "wfzjd"},
-            #                        {"name": "mDataProp_8", "value": "wfzdj"}, {"name": "mDataProp_9", "value": "kcsx"},
-            #                        {"name": "iSortCol_0", "value": 5}, {"name": "sSortDir_0", "value": "desc"},
-            #                        {"name": "iSortingCols", "value": 1}, {"name": "bSortable_0", "value": False},
-            #                        {"name": "bSortable_1", "value": False}, {"name": "bSortable_2", "value": False},
-            #                        {"name": "bSortable_3", "value": False}, {"name": "bSortable_4", "value": False},
-            #                        {"name": "bSortable_5", "value": True}, {"name": "bSortable_6", "value": False},
-            #                        {"name": "bSortable_7", "value": False}, {"name": "bSortable_8", "value": False},
-            #                        {"name": "bSortable_9", "value": False}]}
-            #
-            #     string = urlencode(data)
-            #     response = self.session.post("http://bkjws.sdu.edu.cn/b/ksap/xs/vksapxs/pageList",
-            #                                  headers={"X-Requested-With": "XMLHttpRequest",
-            #                                           "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
-            #                                  data=string)
-            #     response = json.loads(response.text)
-            #     if self._check_response(response, echo):
-            #         self._raw_past_score = response
-            #         return self._raw_past_score
-            #     else:
-            #         raise Exception(
-            #             response, 'unexpected error please create a issue on GitHub')
 
-
-
-            # @_keep_live
-            # def get_now_score(self):
-            #     """
-            #     :type: list
-            #     :return:
-            #     """
-            #
-            #     response = self.get_raw_now_score()
-            #     score_list = response['object']['aaData']
-            #     return score_list
+    @_keep_live
+    def update_contact(self, english_name='', phone_number='', postcode='', address=''):
+        if hasattr(self, '_detail'):
+            self.get_detail()
+        detail = self.detail
+        english_name = english_name if english_name else detail['ywxm']
+        phone_number = phone_number if phone_number else detail['lxdh']
+        address = address if address else detail['txdz']
+        postcode = postcode if postcode else detail['yb']
+        info = {'ywxm': english_name,
+                'lxdh': phone_number,
+                'txdz': address,
+                'yb': postcode}
+        for key, value in info.items():
+            if value == None:
+                info[key] = ''
+        print(info)
+        r = self.session.post('http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/save', data=info)
+        r = json.loads(r.text)
+        if r['result'] == 'success' and r['msg'] == "保存成功":
+            return True
+        else:
+            raise Exception(r, 'unexpected error please create a issue on GitHub')
