@@ -13,13 +13,15 @@ def release(args):
     with open('./package.json', 'r+', encoding='utf-8') as f:
         package = json.load(f)
         package['version'] = version
-        f.seek(0)
+    with open('./package.json', 'w', encoding='utf-8') as f:
+
         json.dump(package, f, ensure_ascii=False, indent=2)
+    os.system("conventional-changelog -p angular -i CHANGELOG.md -s -r 0")
     if '--commit' in args:
         print('committing')
+        os.system('git add CHANGELOG.md package.json')
         os.system('git commit -m "chore(release): {}"'.format(version))
         os.system('git tag v{}'.format(version))
-    print(args)
 
 
 cmds = {"build": 'python setup.py bdist_wheel',
