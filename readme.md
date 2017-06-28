@@ -8,6 +8,14 @@ dev: [![Build Status](https://travis-ci.org/Trim21/sdu_bkjws.svg?branch=dev)](ht
 因为所用到的依赖beautifulsoup4不支持python2,所以本项目不会支持python2
 
 done:
-- login
-- lesson
-- past score
+- 登录
+- 获取个人信息
+- 更新联系方式
+- 课程
+- 本学期成绩
+- 往年成绩
+
+todo:
+- 获取教学计划 
+- 添加课程(bkjwxk)
+- 查询课程信息(bkjwxk)
