@@ -1,6 +1,6 @@
 {
   "name": "sdu_bkjws",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "一个用来解析山东大学教务系统的库 and this is no a nodejs package",
   "main": "index.js",
   "directories": {
@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "build": "python setup.py bdist_wheel",
-    "clean": "rm -r sdu_bkjws.egg-info build dist",
+    "clean": "rm -r sdu_bkjws.egg-info build dist .eggs",
     "release": "./node_modules/.bin/standard-version"
   },
   "repository": {
