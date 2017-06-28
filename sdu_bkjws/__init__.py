@@ -54,7 +54,8 @@ class SduBkjws(object):
         if hasattr(self, '_lessons'):
             return self._lessons
         else:
-            raise Exception('run get_lesson() to init first')
+            self.get_lesson()
+            return self._lessons
 
     def get_lesson(self):
         html = self.get_lesson_html()
@@ -188,7 +189,7 @@ class SduBkjws(object):
     @_keep_live
     def get_now_score(self):
         """
-        :type: list
+        :type: bool
         :return:
         """
         response = self.get_raw_now_score()
@@ -202,7 +203,7 @@ class SduBkjws(object):
             return False
 
     @_keep_live
-    def update_contact(self, english_name='', phone_number='', postcode='', address=''):
+    def update_contact_info(self, english_name='', phone_number='', postcode='', address=''):
         if hasattr(self, '_detail'):
             self.get_detail()
         detail = self.detail
