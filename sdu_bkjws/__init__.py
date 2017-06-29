@@ -225,3 +225,39 @@ class SduBkjws(object):
             return True
         else:
             raise Exception(r, 'unexpected error please create a issue on GitHub')
+
+    @_keep_live
+    def get_rank_with_query(self, lesson_num_long, lesson_num, exam_time):
+        kch_kxh_kssj = '{}_{}_{}'.format(lesson_num_long, lesson_num, exam_time)
+        query = {'aoData': '',
+                 'dataTableId_length': -1,
+                 'kch_kxh_kssj': kch_kxh_kssj}
+        print(query)
+        r = self.session.post('http://bkjws.sdu.edu.cn/f/cj/cjcx/xs/xspm',
+                              headers={"X-Requested-With": "XMLHttpRequest",
+                                       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
+                              data=query)
+        soup = BeautifulSoup(r.text, 'html.parser')
+        s = soup.find('table', id='dataTableId')
+        # print(s)
+
+        l = s.find_all('tr')
+        head = l[0]
+        body = l[1:]
+        body = list(map(lambda x: x.find_all('td'), body))
+        objList = []
+        for line in body:#todo: list和dict的对应关系
+            line = list(map(lambda x: x.text, line))
+            objList.append({
+                "lesson_num_long",
+                "lesson_name",
+                "lesson_num",
+                "credit",
+                "exam_time",
+                "score",
+                "选课人数"  # todo: english
+                "rank",
+                "max_score",
+                "min_score"
+            })
+        return objList
