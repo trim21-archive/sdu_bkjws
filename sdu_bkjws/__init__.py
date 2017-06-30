@@ -20,33 +20,24 @@ class SduBkjws(object):
     def __init__(self, student_id, password):
         self.student_id = student_id
         self.password = password
-        self.login()
+        self.session = self.login()
 
     # return a requests session, which include cookies. you can use it to get
     # html directly
     def login(self):
-        self.last_connect = time.time()
-        s = requests.session()
-        s.get('http://bkjws.sdu.edu.cn')
-        data = {
-            'j_username': self.student_id,
-            'j_password': self.password
-        }
-        r6 = s.post('http://bkjws.sdu.edu.cn/b/ajaxLogin', data=data)
-        if r6.text == '"success"':
-            self.session = s
-        else:
-            raise Exception('username or password error')
-
-    # use session to get lesson html
-    @_keep_live
-    def get_lesson_html(self):
-        s = self.session
-        if s:
-            r3 = s.get('http://bkjws.sdu.edu.cn/f/xk/xs/bxqkb')
-            return r3.text
-        else:
-            return False
+        if not hasattr(self, 'session'):
+            self.last_connect = time.time()
+            s = requests.session()
+            s.get('http://bkjws.sdu.edu.cn')
+            data = {
+                'j_username': self.student_id,
+                'j_password': self.password
+            }
+            r6 = s.post('http://bkjws.sdu.edu.cn/b/ajaxLogin', data=data)
+            if r6.text == '"success"':
+                return s
+            else:
+                raise Exception('username or password error')
 
     # not sure if it's appropriate to use
     @property
@@ -58,8 +49,7 @@ class SduBkjws(object):
             return self._lessons
 
     def get_lesson(self):
-        html = self.get_lesson_html()
-        # print(html)
+        html = self.session.get('http://bkjws.sdu.edu.cn/f/xk/xs/bxqkb').text
         soup = BeautifulSoup(html, "html.parser")
         s = soup.find('table',
                       attrs={"class": "table table-striped table-bordered table-hover",
@@ -99,7 +89,7 @@ class SduBkjws(object):
         """
         r = self.session.post("http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/detail",
                               headers={"X-Requested-With": "XMLHttpRequest"})
-        r = json.loads(r.text)
+        r = r.json()
         if r['result'] == 'success':
             self._detail = r['object']
             return self._detail
@@ -118,7 +108,8 @@ class SduBkjws(object):
                            {"name": "mDataProp_0", "value": "xnxq"}, {"name": "mDataProp_1", "value": "kch"},
                            {"name": "mDataProp_2", "value": "kcm"}, {"name": "mDataProp_3", "value": "kxh"},
                            {"name": "mDataProp_4", "value": "xf"}, {"name": "mDataProp_5", "value": "kssj"},
-                           {"name": "mDataProp_6", "value": "kscjView"}, {"name": "mDataProp_7", "value": "wfzjd"},
+                           {"name": "mDataProp_6", "value": "kscjView"},
+                           {"name": "mDataProp_7", "value": "wfzjd"},
                            {"name": "mDataProp_8", "value": "wfzdj"}, {"name": "mDataProp_9", "value": "kcsx"},
                            {"name": "iSortCol_0", "value": 5}, {"name": "sSortDir_0", "value": "desc"},
                            {"name": "iSortingCols", "value": 1}, {"name": "bSortable_0", "value": False},
@@ -133,7 +124,7 @@ class SduBkjws(object):
                                      headers={"X-Requested-With": "XMLHttpRequest",
                                               "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
                                      data=string)
-        response = json.loads(response.text)
+        response = response.json()
         if response['result'] == 'success' and response['object']['sEcho'] == str(echo):
             self._raw_past_score = response
             return self._raw_past_score
@@ -164,7 +155,8 @@ class SduBkjws(object):
                            {"name": "mDataProp_0", "value": "xnxq"}, {"name": "mDataProp_1", "value": "kch"},
                            {"name": "mDataProp_2", "value": "kcm"}, {"name": "mDataProp_3", "value": "kxh"},
                            {"name": "mDataProp_4", "value": "xf"}, {"name": "mDataProp_5", "value": "kssj"},
-                           {"name": "mDataProp_6", "value": "kscjView"}, {"name": "mDataProp_7", "value": "wfzjd"},
+                           {"name": "mDataProp_6", "value": "kscjView"},
+                           {"name": "mDataProp_7", "value": "wfzjd"},
                            {"name": "mDataProp_8", "value": "wfzdj"}, {"name": "mDataProp_9", "value": "kcsx"},
                            {"name": "iSortCol_0", "value": 5}, {"name": "sSortDir_0", "value": "desc"},
                            {"name": "iSortingCols", "value": 1}, {"name": "bSortable_0", "value": False},
@@ -178,7 +170,7 @@ class SduBkjws(object):
                                      headers={"X-Requested-With": "XMLHttpRequest",
                                               "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
                                      data=string)
-        response = json.loads(response.text)
+        response = response.json()
         if self._check_response(response, echo):
             self._raw_now_score = response
             return self._raw_now_score
@@ -218,9 +210,10 @@ class SduBkjws(object):
         for key, value in info.items():
             if value == None:
                 info[key] = ''
-        print(info)
-        r = self.session.post('http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/save', data=info)
-        r = json.loads(r.text)
+        r = self.session.post('http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/save',
+                              headers={'X-Requested-With': 'XMLHttpRequest'},
+                              data=info)
+        r = r.json()
         if r['result'] == 'success' and r['msg'] == "保存成功":
             return True
         else:
@@ -244,20 +237,23 @@ class SduBkjws(object):
         l = s.find_all('tr')
         head = l[0]
         body = l[1:]
+        head = list(map(lambda x: x.text, head.find_all('th')))
+        # body = list(map(lambda x: x.find_all('td'), body))
+        print(head)
         body = list(map(lambda x: x.find_all('td'), body))
         objList = []
-        for line in body:#todo: list和dict的对应关系
+        for line in body:
             line = list(map(lambda x: x.text, line))
             objList.append({
-                "lesson_num_long",
-                "lesson_name",
-                "lesson_num",
-                "credit",
-                "exam_time",
-                "score",
-                "选课人数"  # todo: english
-                "rank",
-                "max_score",
-                "min_score"
+                "lesson_num_long": line[head.index('课程号')],
+                "lesson_name": line[head.index('课程名')],
+                "lesson_num": line[head.index('课序号')],
+                "credit": line[head.index('学分')],
+                "exam_time": line[head.index('考试时间')],
+                "score": line[head.index('成绩')],
+                "number": line[head.index('选课人数')],
+                "rank": line[head.index('排名')],
+                "max_score": line[head.index('最高分')],
+                "min_score": line[head.index('最低分')]
             })
         return objList
