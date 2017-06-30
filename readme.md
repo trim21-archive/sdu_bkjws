@@ -20,3 +20,18 @@ todo:
 - 获取教学计划 
 - 添加课程(bkjwxk)
 - 查询课程信息(bkjwxk)
+
+for contributor:
+
+creat a `keys.json` in `test` dir
+```json
+{
+    "student_id": "student_id",
+    "password": "password"
+}
+```
+
+then 
+```
+python -m unittest test
+```
