@@ -3,15 +3,23 @@ import json
 import os.path
 import sys
 import sdu_bkjws
+import glob
+import os
 
 testDir = os.path.split(os.path.realpath(__file__))[0]
 
 
 class TestStringMethods(unittest.TestCase):
     def setUp(self):
-        with open(testDir + '/keys.json', 'r', encoding='utf-8') as f:
-            obj = json.load(f)
-        self.sdu = sdu_bkjws.SduBkjws(obj['student_id'], obj['password'])
+        if glob.glob(testDir + '/keys.json'):
+            with open(testDir + '/keys.json', 'r', encoding='utf-8') as f:
+                obj = json.load(f)
+            student_id = obj['student_id']
+            password = obj['password']
+        else:
+            student_id = os.environ['student_id']
+            password = os.environ['password']
+        self.sdu = sdu_bkjws.SduBkjws(student_id, password)
 
     def test_login(self):
         self.sdu.login()

@@ -8,3 +8,4 @@ install:
 
 script:
     - python -c 'import sdu_bkjws'
+    - python -m unittest test
