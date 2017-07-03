@@ -4,7 +4,6 @@ import requests
 import time
 from urllib.parse import urlencode
 import random
-import multidict
 
 
 def _keep_live(fn):
