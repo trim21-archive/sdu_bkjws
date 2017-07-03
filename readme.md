@@ -11,7 +11,9 @@ pypi:[https://pypi.python.org/pypi/sdu-bkjws/1.0.0](https://pypi.python.org/pypi
 
 ## [changelog](https://github.com/Trim21/sdu_bkjws/blob/master/CHANGELOG.md#100-2017-07-03)
 
-todo:
+## [Docs](https://blog.trim21.cn/sdu_bkjws/)
+
+## todo:
 - 获取教学计划 
 - 添加课程(bkjwxk)
 - 查询课程信息(bkjwxk)
