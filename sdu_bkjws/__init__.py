@@ -13,11 +13,20 @@ def _keep_live(fn):
             self.last_connect = time.time()
         return fn(self, *args, **kwargs)
 
+    wrapper.__doc__ = fn.__doc__
+    wrapper.__repr__ = fn.__repr__
     return wrapper
 
 
 class SduBkjws(object):
     def __init__(self, student_id, password):
+        """
+
+        :param student_id: student_id of jw system
+        :type student_id: str
+        :param password: password
+        :type password: str
+        """
         self.student_id = student_id
         self.password = password
         self.session = self.login()
@@ -25,12 +34,30 @@ class SduBkjws(object):
                              'X-Requested-With': 'XMLHttpRequest'}
 
     @property
-    def echo(self):
+    def _echo(self):
+        """
+        生成一个随机数,用来做数据校验
+
+        :return: 
+        :rtype: int
+        """
         return random.randint(1, 9)
 
     @staticmethod
-    def aodata(echo, columns, xnxq=None, final_exam=False):
+    def _aodata(echo, columns, xnxq=None, final_exam=False):
+        """
+        生成用于post的数据
 
+        :param echo: a int to check is response is write
+        :type echo: int
+        :param columns: 
+        :type columns: list
+        :param xnxq: str
+        :type xnxq: string
+        :param final_exam: 
+        :rtype: bool
+        :return: a valid data for post to get data
+        """
         ao_data = [{"name": "sEcho", "value": echo},
                    {"name": "iColumns", "value": len(columns)},
                    {"name": "sColumns", "value": ""},
@@ -48,9 +75,13 @@ class SduBkjws(object):
 
         return urlencode({"aoData": ao_data})
 
-    # return a requests session, which include cookies. you can use it to get
-    # html directly
     def login(self):
+        """
+        登陆系统,返回一个requests的session对象
+
+        :return: session with login cookies
+        :rtype: requests.sessions.Session
+        """
         if not hasattr(self, 'session'):
             self.last_connect = time.time()
             s = requests.session()
@@ -66,17 +97,15 @@ class SduBkjws(object):
                 s.close()
                 raise Exception('username or password error')
 
-    # not sure if it's appropriate to use
-    @property
-    def lessons(self):
-        if hasattr(self, '_lessons'):
-            return self._lessons
-        else:
-            self.get_lesson()
-            return self._lessons
-
+    @_keep_live
     def get_lesson(self):
-        html = self.session.get('http://bkjws.sdu.edu.cn/f/xk/xs/bxqkb').text
+        """
+        获取课表,返回一个列表,包含所有课表对象
+
+        :return: list of lessons
+        :rtype: list[dict]
+        """
+        html = self._get('http://bkjws.sdu.edu.cn/f/xk/xs/bxqkb')
         soup = BeautifulSoup(html, "html.parser")
         s = soup.find('table',
                       attrs={"class": "table table-striped table-bordered table-hover",
@@ -99,13 +128,32 @@ class SduBkjws(object):
         self._lessons = c
         return c
 
+    @property
+    def lessons(self):
+        """
+        返回lessons,如果未调用过``get_lesson()``会自动调用
+
+        :return: list of lessons
+        :rtype: list
+        """
+        if hasattr(self, '_lessons'):
+            return self._lessons
+        else:
+            self.get_lesson()
+            return self._lessons
+
     @_keep_live
     def get_fail_score(self):
-        echo = self.echo
-        r = self.post('http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/bjgcx',
+        """
+        查询不及格成绩,返回一个list
 
-                      data=self.aodata(echo, ["xnxq", "kch", "kcm", "kxh", "xf", "kssj", "kscjView"]))
-        # print(r)
+        :return: list of fail lesson
+        :rtype: list
+        """
+        echo = self._echo
+        r = self._post('http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/bjgcx',
+
+                       data=self._aodata(echo, ["xnxq", "kch", "kcm", "kxh", "xf", "kssj", "kscjView"]))
         if self._check_response(r, echo):
             return r['object']['aaData']
         else:
@@ -113,6 +161,12 @@ class SduBkjws(object):
 
     @property
     def detail(self):
+        """
+        个人信息,如果未调用过``get_detail()``会自动调用
+
+        :return: information of student
+        :rtype: dict
+        """
         if hasattr(self, '_detail'):
             return self._detail
         else:
@@ -122,11 +176,12 @@ class SduBkjws(object):
     @_keep_live
     def get_detail(self):
         """
-        :type: dict
-        :return:
+        个人信息,同时会把返回值保存在self.detail中
+        :return: information of student
+        :rtype: dict
         """
-        r = self.post("http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/detail",
-                      data=None)
+        r = self._post("http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/detail",
+                       data=None)
         # r = r.json()
         if r['result'] == 'success':
             self._detail = r['object']
@@ -137,16 +192,18 @@ class SduBkjws(object):
     @_keep_live
     def get_raw_past_score(self):
         """
-        :type: dict
-        :return:
+        历年成绩查询的原始返回值,请使用get_past_score()
+        :return: dict of the raw response of past score
+        :rtype: list
         """
         echo = random.randint(1, 9)
 
-        response = self.post("http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/lscx",
+        response = self._post("http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/lscx",
 
-                             data=self.aodata(echo,
-                                              columns=["xnxq", "kcm", "kxh", "xf", "kssj", "kscjView", "wfzjd", "wfzdj",
-                                                       "kcsx"]))
+                              data=self._aodata(echo,
+                                                columns=["xnxq", "kcm", "kxh", "xf", "kssj", "kscjView", "wfzjd",
+                                                         "wfzdj",
+                                                         "kcsx"]))
         if self._check_response(response, echo):
             self._raw_past_score = response
             return self._raw_past_score
@@ -157,8 +214,9 @@ class SduBkjws(object):
     @_keep_live
     def get_past_score(self):
         """
-        :type: list
-        :return:
+        历年成绩查询
+        :return: list of past score
+        :rtype: list
         """
 
         response = self.get_raw_past_score()
@@ -168,16 +226,18 @@ class SduBkjws(object):
     @_keep_live
     def get_raw_now_score(self):
         """
-        :type: dict
+        
+        :rtype: dict
         :return:
         """
         echo = random.randint(1, 9)
 
-        response = self.post("http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/list",
+        response = self._post("http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/list",
 
-                             data=self.aodata(echo,
-                                              columns=["xnxq", "kcm", "kxh", "xf", "kssj", "kscjView", "wfzjd", "wfzdj",
-                                                       "kcsx"]))
+                              data=self._aodata(echo,
+                                                columns=["xnxq", "kcm", "kxh", "xf", "kssj", "kscjView", "wfzjd",
+                                                         "wfzdj",
+                                                         "kcsx"]))
         if self._check_response(response, echo):
             self._raw_now_score = response
             return self._raw_now_score
@@ -188,8 +248,9 @@ class SduBkjws(object):
     @_keep_live
     def get_now_score(self):
         """
-        :type: bool
-        :return:
+        
+        :return: 
+        :rtype: list
         """
         response = self.get_raw_now_score()
         score_list = response['object']['aaData']
@@ -218,9 +279,9 @@ class SduBkjws(object):
         for key, value in info.items():
             if not value:
                 info[key] = ''
-        r = self.post('http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/save',
+        r = self._post('http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/save',
 
-                      data=info)
+                       data=info)
         if r['result'] == 'success' and r['msg'] == "保存成功":
             return True
         else:
@@ -235,7 +296,22 @@ class SduBkjws(object):
         return self._get_rank_with_query(query)
 
     @_keep_live
-    def post(self, url, data, headers=None):
+    def _get(self, url, params=None, headers=None):
+        r = self.session.get(url, headers=headers, params=params)
+        if r.headers['content-type'].find('json') != -1:
+            return r.json()
+        if r.headers['content-type'].find('html') != -1:
+            return r.text
+
+    @_keep_live
+    def _post(self, url, data, headers=None):
+        """
+
+        :param url: 2
+        :param data: 2
+        :param headers: 2
+        :return: 22
+        """
         if headers:
             r = self.session.post(url, headers=headers,
                                   data=data)
@@ -255,8 +331,8 @@ class SduBkjws(object):
         return self._get_rank_with_query(query)[0]
 
     def _get_rank_with_query(self, query):
-        r = self.post('http://bkjws.sdu.edu.cn/f/cj/cjcx/xs/xspm',
-                      data=query)
+        r = self._post('http://bkjws.sdu.edu.cn/f/cj/cjcx/xs/xspm',
+                       data=query)
         soup = BeautifulSoup(r, 'html.parser')
         s = soup.find('table', id='dataTableId')
         l = s.find_all('tr')
@@ -287,11 +363,16 @@ class SduBkjws(object):
 
     @_keep_live
     def get_comment_lesson_info(self):  # 获取课程序列
-
+        """
+        获取教学评估内所有需要课程
+        
+        :return: 
+        :rtype: list
+        """
         echo = random.randint(0, 9)
-        response = self.post('http://bkjws.sdu.edu.cn/b/pg/xs/list',
+        response = self._post('http://bkjws.sdu.edu.cn/b/pg/xs/list',
 
-                             data=self.aodata(echo, ['kch', 'kcm', 'jsm', 'function', 'function']), )
+                              data=self._aodata(echo, ['kch', 'kcm', 'jsm', 'function', 'function']), )
         if self._check_response(response, echo=echo):
             return response['object']['aaData']
         else:
@@ -299,11 +380,20 @@ class SduBkjws(object):
 
     @_keep_live
     def get_exam_time(self, xnxq):
-        echo = self.echo
-        r = self.post('http://bkjws.sdu.edu.cn/b/ksap/xs/vksapxs/pageList',
-                      data=self._aodata(echo, xnxq=xnxq,
-                                        columns=["function", 'ksmc', 'kcm', 'kch', 'xqmc', 'jxljs', 'sjsj', "ksfsmc",
-                                                 "ksffmc", "ksbz"]))
+        """
+        获取考试时间 
+        
+        :param xnxq: 学年学期 格式为 ``开始学年-结束学年-{1|2|3}`` 3为暑期学校 example:``201-2017-2``
+        :type xnxq: str
+        :return: list of exam time
+        :rtype: list
+        """
+        echo = self._echo
+        r = self._post('http://bkjws.sdu.edu.cn/b/ksap/xs/vksapxs/pageList',
+                       data=self._aodata(echo, xnxq=xnxq,
+                                         columns=["function", 'ksmc', 'kcm', 'kch', 'xqmc',
+                                                  'jxljs', 'sjsj', "ksfsmc",
+                                                  "ksffmc", "ksbz"]))
         if self._check_response(r, echo):
             return r['object']['aaData']
         else:
