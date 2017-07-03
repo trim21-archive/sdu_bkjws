@@ -50,6 +50,7 @@ class SduBkjws(object):
             if r6.text == '"success"':
                 return s
             else:
+                s.close()
                 raise Exception('username or password error')
 
     # not sure if it's appropriate to use
@@ -207,7 +208,7 @@ class SduBkjws(object):
     def get_multi_rank_with_query(self, search_list):
         query = "aoData=&dataTableId_length=-1"
         for obj in search_list:
-            lesson_num_long, lesson_num, exam_time = obj['lesson_num_long'], obj['lesson_num'], obj['exam_time']
+            lesson_num_long, lesson_num, exam_time = obj['lesson_num_long'], obj['lesson_num_short'], obj['exam_time']
             query += '&kch_kxh_kssj={}_{}_{}'.format(lesson_num_long, lesson_num, exam_time)
         return self._get_rank_with_query(query)
 
@@ -227,10 +228,10 @@ class SduBkjws(object):
             return r.text
 
     @_keep_live
-    def get_rank_with_query(self, lesson_num_long, lesson_num, exam_time):
+    def get_rank_with_query(self, lesson_num_long, lesson_num_short, exam_time):
         query = "aoData=&dataTableId_length=-1"
-        query += '&kch_kxh_kssj={}_{}_{}'.format(lesson_num_long, lesson_num, exam_time)
-        return self._get_rank_with_query(query)
+        query += '&kch_kxh_kssj={}_{}_{}'.format(lesson_num_long, lesson_num_short, exam_time)
+        return self._get_rank_with_query(query)[0]
 
     def _get_rank_with_query(self, query):
         r = self.post('http://bkjws.sdu.edu.cn/f/cj/cjcx/xs/xspm',
@@ -250,7 +251,7 @@ class SduBkjws(object):
             objList.append({
                 "lesson_num_long": line[head.index('课程号')],
                 "lesson_name": line[head.index('课程名')],
-                "lesson_num": line[head.index('课序号')],
+                "lesson_num_short": line[head.index('课序号')],
                 "credit": line[head.index('学分')],
                 "exam_time": line[head.index('考试时间')],
                 "score": line[head.index('成绩')],
