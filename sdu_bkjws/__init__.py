@@ -305,8 +305,7 @@ class SduBkjws(object):
                                         columns=["function", 'ksmc', 'kcm', 'kch', 'xqmc', 'jxljs', 'sjsj', "ksfsmc",
                                                  "ksffmc", "ksbz"]))
         if self._check_response(r, echo):
-            self._raw_past_score = r
-            return self._raw_past_score
+            return r['object']['aaData']
         else:
             raise Exception(
                 r, 'unexpected error please create a issue on GitHub')
