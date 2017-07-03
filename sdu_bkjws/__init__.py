@@ -209,35 +209,9 @@ class SduBkjws(object):
         for obj in search_list:
             lesson_num_long, lesson_num, exam_time = obj['lesson_num_long'], obj['lesson_num'], obj['exam_time']
             query += '&kch_kxh_kssj={}_{}_{}'.format(lesson_num_long, lesson_num, exam_time)
-        r = self.post('http://bkjws.sdu.edu.cn/f/cj/cjcx/xs/xspm',
-                      headers={"X-Requested-With": "XMLHttpRequest",
-                               "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
-                      data=query)
-        soup = BeautifulSoup(r.text, 'html.parser')
-        s = soup.find('table', id='dataTableId')
+        return self._get_rank_with_query(query)
 
-        l = s.find_all('tr')
-        head = l[0]
-        body = l[1:]
-        head = list(map(lambda x: x.text, head.find_all('th')))
-        body = list(map(lambda x: x.find_all('td'), body))
-        objList = []
-        for line in body:
-            line = list(map(lambda x: x.text, line))
-            objList.append({
-                "lesson_num_long": line[head.index('课程号')],
-                "lesson_name": line[head.index('课程名')],
-                "lesson_num": line[head.index('课序号')],
-                "credit": line[head.index('学分')],
-                "exam_time": line[head.index('考试时间')],
-                "score": line[head.index('成绩')],
-                "number": line[head.index('选课人数')],
-                "rank": line[head.index('排名')],
-                "max_score": line[head.index('最高分')],
-                "min_score": line[head.index('最低分')]
-            })
-        return objList
-
+    #
     @_keep_live
     def post(self, url, data, headers=None):
         if not headers:
@@ -256,6 +230,9 @@ class SduBkjws(object):
     def get_rank_with_query(self, lesson_num_long, lesson_num, exam_time):
         query = "aoData=&dataTableId_length=-1"
         query += '&kch_kxh_kssj={}_{}_{}'.format(lesson_num_long, lesson_num, exam_time)
+        return self._get_rank_with_query(query)
+
+    def _get_rank_with_query(self, query):
         r = self.post('http://bkjws.sdu.edu.cn/f/cj/cjcx/xs/xspm',
                       headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
                                "X-Requested-With": "XMLHttpRequest"
