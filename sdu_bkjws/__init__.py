@@ -40,9 +40,7 @@ class SduBkjws(object):
         if xnxq:
             if final_exam:
                 ao_data.append({"name": "ksrwid", "value": "000000005bf6cb6f015bfac609410d4b"})
-            ao_data.append({"name": "xnxq", "value": "2016-2017-2"})
-
-            # pass
+            ao_data.append({"name": "xnxq", "value": xnxq})
 
         for index, value in enumerate(columns):
             ao_data.append({"name": "mDataProp_{}".format(index), "value": value})
@@ -303,9 +301,9 @@ class SduBkjws(object):
     def get_exam_time(self, xnxq):
         echo = self.echo
         r = self.post('http://bkjws.sdu.edu.cn/b/ksap/xs/vksapxs/pageList',
-                      data=self.aodata(echo,
-                                       columns=["function", 'ksmc', 'kcm', 'kch', 'xqmc', 'jxljs', 'sjsj', "ksfsmc",
-                                                "ksffmc", "ksbz"]))
+                      data=self._aodata(echo, xnxq=xnxq,
+                                        columns=["function", 'ksmc', 'kcm', 'kch', 'xqmc', 'jxljs', 'sjsj', "ksfsmc",
+                                                 "ksffmc", "ksbz"]))
         if self._check_response(r, echo):
             self._raw_past_score = r
             return self._raw_past_score
