@@ -21,19 +21,34 @@ class SduBkjws(object):
         self.student_id = student_id
         self.password = password
         self.session = self.login()
+        self.post_headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                             'X-Requested-With': 'XMLHttpRequest'}
 
-    def aoData(self, echo, columns):
-        aoData = [{"name": "sEcho", "value": echo},
-                  {"name": "iColumns", "value": len(columns)},
-                  {"name": "sColumns", "value": ""},
-                  {"name": "iDisplayStart", "value": 0},
-                  {"name": "iDisplayLength", "value": -1},
-                  ]
+    @property
+    def echo(self):
+        return random.randint(1, 9)
+
+    @staticmethod
+    def aodata(echo, columns, xnxq=None, final_exam=False):
+
+        ao_data = [{"name": "sEcho", "value": echo},
+                   {"name": "iColumns", "value": len(columns)},
+                   {"name": "sColumns", "value": ""},
+                   {"name": "iDisplayStart", "value": 0},
+                   {"name": "iDisplayLength", "value": -1},
+                   ]
+        if xnxq:
+            if final_exam:
+                ao_data.append({"name": "ksrwid", "value": "000000005bf6cb6f015bfac609410d4b"})
+            ao_data.append({"name": "xnxq", "value": "2016-2017-2"})
+
+            # pass
+
         for index, value in enumerate(columns):
-            aoData.append({"name": "mDataProp_{}".format(index), "value": value})
-            aoData.append({"name": "bSortable_{}".format(index), "value": False})
+            ao_data.append({"name": "mDataProp_{}".format(index), "value": value})
+            ao_data.append({"name": "bSortable_{}".format(index), "value": False})
 
-        return urlencode({"aoData": aoData})
+        return urlencode({"aoData": ao_data})
 
     # return a requests session, which include cookies. you can use it to get
     # html directly
@@ -86,6 +101,18 @@ class SduBkjws(object):
         self._lessons = c
         return c
 
+    @_keep_live
+    def get_fail_score(self):
+        echo = self.echo
+        r = self.post('http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/bjgcx',
+
+                      data=self.aodata(echo, ["xnxq", "kch", "kcm", "kxh", "xf", "kssj", "kscjView"]))
+        # print(r)
+        if self._check_response(r, echo):
+            return r['object']['aaData']
+        else:
+            raise Exception(r, 'unexpected error please create a issue on GitHub')
+
     @property
     def detail(self):
         if hasattr(self, '_detail'):
@@ -93,7 +120,6 @@ class SduBkjws(object):
         else:
             self.get_detail()
             return self._detail
-            # raise Exception('run get_detail() to init first')
 
     @_keep_live
     def get_detail(self):
@@ -102,7 +128,7 @@ class SduBkjws(object):
         :return:
         """
         r = self.post("http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/detail",
-                      headers={"X-Requested-With": "XMLHttpRequest"}, data=None)
+                      data=None)
         # r = r.json()
         if r['result'] == 'success':
             self._detail = r['object']
@@ -119,13 +145,11 @@ class SduBkjws(object):
         echo = random.randint(1, 9)
 
         response = self.post("http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/lscx",
-                             headers={"X-Requested-With": "XMLHttpRequest",
-                                      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
-                             data=self.aoData(echo,
+
+                             data=self.aodata(echo,
                                               columns=["xnxq", "kcm", "kxh", "xf", "kssj", "kscjView", "wfzjd", "wfzdj",
                                                        "kcsx"]))
-        # response = response.json()
-        if response['result'] == 'success' and response['object']['sEcho'] == str(echo):
+        if self._check_response(response, echo):
             self._raw_past_score = response
             return self._raw_past_score
         else:
@@ -152,9 +176,8 @@ class SduBkjws(object):
         echo = random.randint(1, 9)
 
         response = self.post("http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/list",
-                             headers={"X-Requested-With": "XMLHttpRequest",
-                                      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
-                             data=self.aoData(echo,
+
+                             data=self.aodata(echo,
                                               columns=["xnxq", "kcm", "kxh", "xf", "kssj", "kscjView", "wfzjd", "wfzdj",
                                                        "kcsx"]))
         if self._check_response(response, echo):
@@ -174,7 +197,8 @@ class SduBkjws(object):
         score_list = response['object']['aaData']
         return score_list
 
-    def _check_response(self, response, echo):
+    @staticmethod
+    def _check_response(response, echo):
         if response['result'] == 'success' and response['object']['sEcho'] == str(echo):
             return True
         else:
@@ -194,10 +218,10 @@ class SduBkjws(object):
                 'txdz': address,
                 'yb': postcode}
         for key, value in info.items():
-            if value == None:
+            if not value:
                 info[key] = ''
         r = self.post('http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/save',
-                      headers={'X-Requested-With': 'XMLHttpRequest'},
+
                       data=info)
         if r['result'] == 'success' and r['msg'] == "保存成功":
             return True
@@ -212,15 +236,14 @@ class SduBkjws(object):
             query += '&kch_kxh_kssj={}_{}_{}'.format(lesson_num_long, lesson_num, exam_time)
         return self._get_rank_with_query(query)
 
-    #
     @_keep_live
     def post(self, url, data, headers=None):
-        if not headers:
+        if headers:
             r = self.session.post(url, headers=headers,
                                   data=data)
         else:
-            r = self.session.post(url, headers={"X-Requested-With": "XMLHttpRequest",
-                                                "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"},
+            r = self.session.post(url,
+                                  headers=self.post_headers,
                                   data=data)
         if r.headers['content-type'].find('json') != -1:
             return r.json()
@@ -235,9 +258,7 @@ class SduBkjws(object):
 
     def _get_rank_with_query(self, query):
         r = self.post('http://bkjws.sdu.edu.cn/f/cj/cjcx/xs/xspm',
-                      headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                               "X-Requested-With": "XMLHttpRequest"
-                               }, data=query)
+                      data=query)
         soup = BeautifulSoup(r, 'html.parser')
         s = soup.find('table', id='dataTableId')
         l = s.find_all('tr')
@@ -245,10 +266,10 @@ class SduBkjws(object):
         body = l[1:]
         head = list(map(lambda x: x.text, head.find_all('th')))
         body = list(map(lambda x: x.find_all('td'), body))
-        objList = []
+        obj_list = []
         for line in body:
             line = list(map(lambda x: x.text, line))
-            objList.append({
+            obj_list.append({
                 "lesson_num_long": line[head.index('课程号')],
                 "lesson_name": line[head.index('课程名')],
                 "lesson_num_short": line[head.index('课序号')],
@@ -260,7 +281,7 @@ class SduBkjws(object):
                 "max_score": line[head.index('最高分')],
                 "min_score": line[head.index('最低分')]
             })
-        return objList
+        return obj_list
 
     def comment_lesson(self):
         # todo: this function
@@ -271,10 +292,23 @@ class SduBkjws(object):
 
         echo = random.randint(0, 9)
         response = self.post('http://bkjws.sdu.edu.cn/b/pg/xs/list',
-                             headers={"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                                      "X-Requested-With": "XMLHttpRequest"
-                                      }, data=self.aoData(echo, ['kch', 'kcm', 'jsm', 'function', 'function']), )
-        if self._check_response(response, echo):
+
+                             data=self.aodata(echo, ['kch', 'kcm', 'jsm', 'function', 'function']), )
+        if self._check_response(response, echo=echo):
             return response['object']['aaData']
         else:
             raise Exception(response, 'unexpected error please create a issue on GitHub')
+
+    @_keep_live
+    def get_exam_time(self, xnxq):
+        echo = self.echo
+        r = self.post('http://bkjws.sdu.edu.cn/b/ksap/xs/vksapxs/pageList',
+                      data=self.aodata(echo,
+                                       columns=["function", 'ksmc', 'kcm', 'kch', 'xqmc', 'jxljs', 'sjsj', "ksfsmc",
+                                                "ksffmc", "ksbz"]))
+        if self._check_response(r, echo):
+            self._raw_past_score = r
+            return self._raw_past_score
+        else:
+            raise Exception(
+                r, 'unexpected error please create a issue on GitHub')
