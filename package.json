@@ -1,6 +1,6 @@
 {
   "name": "sdu_bkjws",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "一个用来解析山东大学教务系统的库 and this is no a nodejs package",
   "main": "index.js",
   "directories": {

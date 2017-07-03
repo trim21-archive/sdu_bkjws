@@ -1,3 +1,22 @@
+<a name="1.0.0"></a>
+# [1.0.0](https://github.com/Trim21/sdu_bkjws/compare/v0.1.2...v1.0.0) (2017-07-03)
+
+
+### Bug Fixes
+
+* **dependence:** remove useless dependence ([e866289](https://github.com/Trim21/sdu_bkjws/commit/e866289))
+
+
+### Features
+
+* **comment:** new api to get all lesson to be commented ([30ed5e8](https://github.com/Trim21/sdu_bkjws/commit/30ed5e8))
+* **detail:** new detail to update contact information ([813cc31](https://github.com/Trim21/sdu_bkjws/commit/813cc31))
+* **exam:** new api to get exam time ([4ebf97b](https://github.com/Trim21/sdu_bkjws/commit/4ebf97b))
+* **property:** property auto init itself ([1538081](https://github.com/Trim21/sdu_bkjws/commit/1538081))
+* **rank:** get rank with query ([16360ac](https://github.com/Trim21/sdu_bkjws/commit/16360ac))
+
+
+
 <a name="0.1.2"></a>
 ## [0.1.2](https://github.com/Trim21/sdu_bkjws/compare/v0.1.0...v0.1.2) (2017-06-28)
 
