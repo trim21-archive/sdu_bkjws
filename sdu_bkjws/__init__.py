@@ -151,13 +151,13 @@ class SduBkjws(object):
         :rtype: list
         """
         echo = self._echo
-        r = self._post('http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/bjgcx',
+        response = self._post('http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/bjgcx',
 
-                       data=self._aodata(echo, ["xnxq", "kch", "kcm", "kxh", "xf", "kssj", "kscjView"]))
-        if self._check_response(r, echo):
-            return r['object']['aaData']
+                              data=self._aodata(echo, ["xnxq", "kch", "kcm", "kxh", "xf", "kssj", "kscjView"]))
+        if self._check_response(response, echo):
+            return response['object']['aaData']
         else:
-            raise Exception(r, 'unexpected error please create a issue on GitHub')
+            raise Exception(response, 'unexpected error please create a issue on GitHub')
 
     @property
     def detail(self):
@@ -180,21 +180,20 @@ class SduBkjws(object):
         :return: information of student
         :rtype: dict
         """
-        r = self._post("http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/detail",
-                       data=None)
-        # r = r.json()
-        if r['result'] == 'success':
-            self._detail = r['object']
+        response = self._post("http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/detail",
+                              data=None)
+        if response['result'] == 'success':
+            self._detail = response['object']
             return self._detail
         else:
-            raise Exception(r, 'unexpected error please create a issue on GitHub')
+            raise Exception(response, 'unexpected error please create a issue on GitHub')
 
     @_keep_live
     def get_raw_past_score(self):
         """
         历年成绩查询的原始返回值,请使用get_past_score()
         :return: dict of the raw response of past score
-        :rtype: list
+        :rtype: dict
         """
         echo = random.randint(1, 9)
 
@@ -279,13 +278,13 @@ class SduBkjws(object):
         for key, value in info.items():
             if not value:
                 info[key] = ''
-        r = self._post('http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/save',
+        response = self._post('http://bkjws.sdu.edu.cn/b/grxx/xs/xjxx/save',
 
-                       data=info)
-        if r['result'] == 'success' and r['msg'] == "保存成功":
+                              data=info)
+        if response['result'] == 'success' and response['msg'] == "保存成功":
             return True
         else:
-            raise Exception(r, 'unexpected error please create a issue on GitHub')
+            raise Exception(response, 'unexpected error please create a issue on GitHub')
 
     @_keep_live
     def get_multi_rank_with_query(self, search_list):
@@ -297,11 +296,11 @@ class SduBkjws(object):
 
     @_keep_live
     def _get(self, url, params=None, headers=None):
-        r = self.session.get(url, headers=headers, params=params)
-        if r.headers['content-type'].find('json') != -1:
-            return r.json()
-        if r.headers['content-type'].find('html') != -1:
-            return r.text
+        response = self.session.get(url, headers=headers, params=params)
+        if response.headers['content-type'].find('json') != -1:
+            return response.json()
+        if response.headers['content-type'].find('html') != -1:
+            return response.text
 
     @_keep_live
     def _post(self, url, data, headers=None):
@@ -312,17 +311,13 @@ class SduBkjws(object):
         :param headers: 2
         :return: 22
         """
-        if headers:
-            r = self.session.post(url, headers=headers,
-                                  data=data)
-        else:
-            r = self.session.post(url,
-                                  headers=self.post_headers,
-                                  data=data)
-        if r.headers['content-type'].find('json') != -1:
-            return r.json()
-        if r.headers['content-type'].find('html') != -1:
-            return r.text
+        response = self.session.post(url,
+                                     headers=headers if headers else self.post_headers,
+                                     data=data)
+        if response.headers['content-type'].find('json') != -1:
+            return response.json()
+        if response.headers['content-type'].find('html') != -1:
+            return response.text
 
     @_keep_live
     def get_rank_with_query(self, lesson_num_long, lesson_num_short, exam_time):
@@ -331,9 +326,9 @@ class SduBkjws(object):
         return self._get_rank_with_query(query)[0]
 
     def _get_rank_with_query(self, query):
-        r = self._post('http://bkjws.sdu.edu.cn/f/cj/cjcx/xs/xspm',
-                       data=query)
-        soup = BeautifulSoup(r, 'html.parser')
+        response = self._post('http://bkjws.sdu.edu.cn/f/cj/cjcx/xs/xspm',
+                              data=query)
+        soup = BeautifulSoup(response, 'html.parser')
         s = soup.find('table', id='dataTableId')
         l = s.find_all('tr')
         head = l[0]
@@ -383,19 +378,19 @@ class SduBkjws(object):
         """
         获取考试时间 
         
-        :param xnxq: 学年学期 格式为 ``开始学年-结束学年-{1|2|3}`` 3为暑期学校 example:``201-2017-2``
+        :param xnxq: 学年学期 格式为 ``开始学年-结束学年-{1|2|3}`` 3为暑期学校 example:``2016-2017-2``
         :type xnxq: str
         :return: list of exam time
         :rtype: list
         """
         echo = self._echo
-        r = self._post('http://bkjws.sdu.edu.cn/b/ksap/xs/vksapxs/pageList',
-                       data=self._aodata(echo, xnxq=xnxq,
-                                         columns=["function", 'ksmc', 'kcm', 'kch', 'xqmc',
-                                                  'jxljs', 'sjsj', "ksfsmc",
-                                                  "ksffmc", "ksbz"]))
-        if self._check_response(r, echo):
-            return r['object']['aaData']
+        response = self._post('http://bkjws.sdu.edu.cn/b/ksap/xs/vksapxs/pageList',
+                              data=self._aodata(echo, xnxq=xnxq,
+                                                columns=["function", 'ksmc', 'kcm', 'kch', 'xqmc',
+                                                         'jxljs', 'sjsj', "ksfsmc",
+                                                         "ksffmc", "ksbz"]))
+        if self._check_response(response, echo):
+            return response['object']['aaData']
         else:
             raise Exception(
-                r, 'unexpected error please create a issue on GitHub')
+                response, 'unexpected error please create a issue on GitHub')
