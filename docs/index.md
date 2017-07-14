@@ -7,8 +7,30 @@ version: 1.0.0
 
 <!-- TOC -->
 
- [TOC]
- 
+- [1. quick start](#1-quick-start)
+- [2. 安装](#2-安装)
+- [3. sdu-bkjws](#3-sdu-bkjws)
+    - [类初始化](#类初始化)
+    - [session](#session)
+        - [SduBkjws.login()和Sdubkjws.session](#sdubkjwslogin和sdubkjwssession)
+    - [个人信息](#个人信息)
+        - [SduBkjws.get_detail()和SduBkjws.detail](#sdubkjwsget_detail和sdubkjwsdetail)
+        - [SduBkjws.update_contact_info()](#sdubkjwsupdate_contact_info)
+    - [lesson](#lesson)
+        - [SduBkjws.lessons](#sdubkjwslessons)
+        - [SduBkjws.get_lessons()](#sdubkjwsget_lessons)
+    - [score](#score)
+        - [SduBkjws.get_now_score()](#sdubkjwsget_now_score)
+        - [SduBkjws.get_past_score()](#sdubkjwsget_past_score)
+        - [SduBkjws.get_raw_now_score()](#sdubkjwsget_raw_now_score)
+        - [SduBkjws.get_rank_with_query](#sdubkjwsget_rank_with_query)
+        - [SduBkjws.get_multi_rank_with_query(query: list)](#sdubkjwsget_multi_rank_with_queryquery-list)
+    - [exam](#exam)
+        - [SduBkjws.get_exam_time(xnxq)](#sdubkjwsget_exam_timexnxq)
+    - [comment](#comment)
+        - [SduBkjws.get_comment_lesson_info()](#sdubkjwsget_comment_lesson_info)
+        - [SduBkjws.comment_lesson](#sdubkjwscomment_lesson)
+
 <!-- /TOC -->
 
 
