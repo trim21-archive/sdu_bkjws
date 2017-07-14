@@ -204,19 +204,37 @@ example:
 }]
 ```
 ####   SduBkjws.get_past_score()
-3
+返回数据同`SduBkjws.get_now_score()`
 ####   SduBkjws.get_raw_now_score()
-4
+向教务系统进行请求返回的原始内容.不建议使用.
 ####   SduBkjws.get_rank_with_query
-5
-####   SduBkjws.get_multi_rank_with_query
-6
+```
+    def get_rank_with_query(self, lesson_num_long, lesson_num_short, exam_time):
+```
+查询条件:
+- `lesson_num_long`
+- `lesson_num_short`
+- `exam_time`
+
+三者为且关系,必须同时符合.
+
+####   SduBkjws.get_multi_rank_with_query(query: list)
+参数接受一个list[dict] 
+
+dict:
+
+```python
+{ 'lesson_num_long':'',
+  'lesson_num_short':''
+  'exam_time':''}
+```
+dict之间为货关系,dict之内为且关系.
 ###   exam
-7
-####   SduBkjws.get_exam_time()
-8
+####   SduBkjws.get_exam_time(xnxq)
+获取某学年学期的考试时间
+xnxq格式:`${开始年份}-${结束年份}-${学期}`
+比如2016-2017年学春季学期就是`2016-2017-2`
 ###   comment
-9
 ####   SduBkjws.get_comment_lesson_info()
 获取所有需要评教的课程信息
 返回一个list[dict]
