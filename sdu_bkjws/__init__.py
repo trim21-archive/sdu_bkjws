@@ -1,4 +1,3 @@
-import json
 from bs4 import BeautifulSoup
 import requests
 import time
@@ -33,16 +32,6 @@ class SduBkjws(object):
         self.post_headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                              'X-Requested-With': 'XMLHttpRequest'}
 
-    @property
-    def _echo(self):
-        """
-        生成一个随机数,用来做数据校验
-
-        :return: 
-        :rtype: int
-        """
-        return random.randint(1, 9)
-
     @staticmethod
     def _aodata(echo, columns, xnxq=None, final_exam=False):
         """
@@ -74,6 +63,27 @@ class SduBkjws(object):
             ao_data.append({"name": "bSortable_{}".format(index), "value": False})
 
         return urlencode({"aoData": ao_data})
+
+    @staticmethod
+    def _unexpected(value):
+        raise Exception(value, 'unexpected error please create a issue on GitHub')
+
+    @staticmethod
+    def _check_response(response, echo):
+        if response['result'] == 'success' and response['object']['sEcho'] == str(echo):
+            return True
+        else:
+            return False
+
+    @property
+    def _echo(self):
+        """
+        生成一个随机数,用来做数据校验
+
+        :return:
+        :rtype: int
+        """
+        return random.randint(1, 9)
 
     def login(self):
         """
@@ -157,7 +167,7 @@ class SduBkjws(object):
         if self._check_response(response, echo):
             return response['object']['aaData']
         else:
-            raise Exception(response, 'unexpected error please create a issue on GitHub')
+            self._unexpected(response)
 
     @property
     def detail(self):
@@ -186,7 +196,7 @@ class SduBkjws(object):
             self._detail = response['object']
             return self._detail
         else:
-            raise Exception(response, 'unexpected error please create a issue on GitHub')
+            self._unexpected(response)
 
     @_keep_live
     def get_raw_past_score(self):
@@ -200,15 +210,15 @@ class SduBkjws(object):
         response = self._post("http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/lscx",
 
                               data=self._aodata(echo,
-                                                columns=["xnxq", "kcm", "kxh", "xf", "kssj", "kscjView", "wfzjd",
+                                                columns=["xnxq", "kcm", "kxh", "xf", "kssj",
+                                                         "kscjView", "wfzjd",
                                                          "wfzdj",
                                                          "kcsx"]))
         if self._check_response(response, echo):
             self._raw_past_score = response
             return self._raw_past_score
         else:
-            raise Exception(
-                response, 'unexpected error please create a issue on GitHub')
+            self._unexpected(response)
 
     @_keep_live
     def get_past_score(self):
@@ -234,15 +244,15 @@ class SduBkjws(object):
         response = self._post("http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/list",
 
                               data=self._aodata(echo,
-                                                columns=["xnxq", "kcm", "kxh", "xf", "kssj", "kscjView", "wfzjd",
+                                                columns=["xnxq", "kcm", "kxh", "xf", "kssj",
+                                                         "kscjView", "wfzjd",
                                                          "wfzdj",
                                                          "kcsx"]))
         if self._check_response(response, echo):
             self._raw_now_score = response
             return self._raw_now_score
         else:
-            raise Exception(
-                response, 'unexpected error please create a issue on GitHub')
+            self._unexpected(response)
 
     @_keep_live
     def get_now_score(self):
@@ -254,13 +264,6 @@ class SduBkjws(object):
         response = self.get_raw_now_score()
         score_list = response['object']['aaData']
         return score_list
-
-    @staticmethod
-    def _check_response(response, echo):
-        if response['result'] == 'success' and response['object']['sEcho'] == str(echo):
-            return True
-        else:
-            return False
 
     @_keep_live
     def update_contact_info(self, english_name='', phone_number='', postcode='', address=''):
@@ -284,7 +287,7 @@ class SduBkjws(object):
         if response['result'] == 'success' and response['msg'] == "保存成功":
             return True
         else:
-            raise Exception(response, 'unexpected error please create a issue on GitHub')
+            self._unexpected(response)
 
     @_keep_live
     def get_multi_rank_with_query(self, search_list):
@@ -331,8 +334,7 @@ class SduBkjws(object):
         soup = BeautifulSoup(response, 'html.parser')
         s = soup.find('table', id='dataTableId')
         l = s.find_all('tr')
-        head = l[0]
-        body = l[1:]
+        head, body = l[0], l[1:]
         head = list(map(lambda x: x.text, head.find_all('th')))
         body = list(map(lambda x: x.find_all('td'), body))
         obj_list = []
@@ -366,12 +368,11 @@ class SduBkjws(object):
         """
         echo = random.randint(0, 9)
         response = self._post('http://bkjws.sdu.edu.cn/b/pg/xs/list',
-
                               data=self._aodata(echo, ['kch', 'kcm', 'jsm', 'function', 'function']), )
         if self._check_response(response, echo=echo):
             return response['object']['aaData']
         else:
-            raise Exception(response, 'unexpected error please create a issue on GitHub')
+            self._unexpected(response)
 
     @_keep_live
     def get_exam_time(self, xnxq):
@@ -392,5 +393,4 @@ class SduBkjws(object):
         if self._check_response(response, echo):
             return response['object']['aaData']
         else:
-            raise Exception(
-                response, 'unexpected error please create a issue on GitHub')
+            self._unexpected(response)
