@@ -9,6 +9,3 @@ install:
 script:
     - python -c 'import sdu_bkjws'
     - python -m unittest test
-    - pip install codecov
-    - codecov
-    - codecov --token=85ace051-10cc-4ad5-9682-202364d7b7d1
