@@ -1,7 +1,5 @@
 from setuptools import setup, find_packages
-from pip.req import parse_requirements
 import os
-from setuptools import Command
 import sys
 import json
 
