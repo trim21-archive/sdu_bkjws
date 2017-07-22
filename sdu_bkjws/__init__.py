@@ -39,11 +39,11 @@ class SduBkjws(object):
 
         :param echo: a int to check is response is write
         :type echo: int
-        :param columns: 
+        :param columns: 所有columns列名组成的list
         :type columns: list
         :param xnxq: str
         :type xnxq: string
-        :param final_exam: 
+        :param final_exam: 是否期末考试
         :rtype: bool
         :return: a valid data for post to get data
         """
@@ -235,9 +235,9 @@ class SduBkjws(object):
     @_keep_live
     def get_raw_now_score(self):
         """
-        
+
         :rtype: dict
-        :return:
+        :return: list[dict]
         """
         echo = random.randint(1, 9)
 
@@ -257,8 +257,8 @@ class SduBkjws(object):
     @_keep_live
     def get_now_score(self):
         """
-        
-        :return: 
+
+        :return: 返回本学期考试成绩
         :rtype: list
         """
         response = self.get_raw_now_score()
@@ -362,8 +362,8 @@ class SduBkjws(object):
     def get_comment_lesson_info(self):  # 获取课程序列
         """
         获取教学评估内所有需要课程
-        
-        :return: 
+
+        :return: 返回所以有需要进行教学评估的课程
         :rtype: list
         """
         echo = random.randint(0, 9)
@@ -377,8 +377,8 @@ class SduBkjws(object):
     @_keep_live
     def get_exam_time(self, xnxq):
         """
-        获取考试时间 
-        
+        获取考试时间
+
         :param xnxq: 学年学期 格式为 ``开始学年-结束学年-{1|2|3}`` 3为暑期学校 example:``2016-2017-2``
         :type xnxq: str
         :return: list of exam time
