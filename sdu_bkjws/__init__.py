@@ -2,18 +2,17 @@ from bs4 import BeautifulSoup
 import requests
 import time
 from urllib.parse import urlencode
+from functools import wraps
 import random
 
 
 def _keep_live(fn):
+    @wraps(fn)
     def wrapper(self, *args, **kwargs):
         if time.time() - self.last_connect > 15 * 60:
             self.session = self.login()
             self.last_connect = time.time()
         return fn(self, *args, **kwargs)
-
-    wrapper.__doc__ = fn.__doc__
-    wrapper.__repr__ = fn.__repr__
     return wrapper
 
 
@@ -107,7 +106,6 @@ class SduBkjws(object):
                 s.close()
                 raise Exception('username or password error')
 
-    @_keep_live
     def get_lesson(self):
         """
         获取课表,返回一个列表,包含所有课表对象
@@ -152,7 +150,6 @@ class SduBkjws(object):
             self.get_lesson()
             return self._lessons
 
-    @_keep_live
     def get_fail_score(self):
         """
         查询不及格成绩,返回一个list
@@ -183,7 +180,6 @@ class SduBkjws(object):
             self.get_detail()
             return self._detail
 
-    @_keep_live
     def get_detail(self):
         """
         个人信息,同时会把返回值保存在self.detail中
@@ -198,14 +194,13 @@ class SduBkjws(object):
         else:
             self._unexpected(response)
 
-    @_keep_live
     def get_raw_past_score(self):
         """
         历年成绩查询的原始返回值,请使用get_past_score()
         :return: dict of the raw response of past score
         :rtype: dict
         """
-        echo = random.randint(1, 9)
+        echo = self._echo
 
         response = self._post("http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/lscx",
 
@@ -220,7 +215,6 @@ class SduBkjws(object):
         else:
             self._unexpected(response)
 
-    @_keep_live
     def get_past_score(self):
         """
         历年成绩查询
@@ -232,14 +226,13 @@ class SduBkjws(object):
         score_list = response['object']['aaData']
         return score_list
 
-    @_keep_live
     def get_raw_now_score(self):
         """
 
         :rtype: dict
         :return: list[dict]
         """
-        echo = random.randint(1, 9)
+        echo = self._echo
 
         response = self._post("http://bkjws.sdu.edu.cn/b/cj/cjcx/xs/list",
 
@@ -254,7 +247,6 @@ class SduBkjws(object):
         else:
             self._unexpected(response)
 
-    @_keep_live
     def get_now_score(self):
         """
 
@@ -265,7 +257,6 @@ class SduBkjws(object):
         score_list = response['object']['aaData']
         return score_list
 
-    @_keep_live
     def update_contact_info(self, english_name='', phone_number='', postcode='', address=''):
         if hasattr(self, '_detail'):
             self.get_detail()
@@ -289,7 +280,6 @@ class SduBkjws(object):
         else:
             self._unexpected(response)
 
-    @_keep_live
     def get_multi_rank_with_query(self, search_list):
         query = "aoData=&dataTableId_length=-1"
         for obj in search_list:
@@ -322,7 +312,6 @@ class SduBkjws(object):
         if response.headers['content-type'].find('html') != -1:
             return response.text
 
-    @_keep_live
     def get_rank_with_query(self, lesson_num_long, lesson_num_short, exam_time):
         query = "aoData=&dataTableId_length=-1"
         query += '&kch_kxh_kssj={}_{}_{}'.format(lesson_num_long, lesson_num_short, exam_time)
@@ -358,7 +347,6 @@ class SduBkjws(object):
         # todo: this function
         pass
 
-    @_keep_live
     def get_comment_lesson_info(self):  # 获取课程序列
         """
         获取教学评估内所有需要课程
@@ -366,7 +354,7 @@ class SduBkjws(object):
         :return: 返回所以有需要进行教学评估的课程
         :rtype: list
         """
-        echo = random.randint(0, 9)
+        echo = self._echo
         response = self._post('http://bkjws.sdu.edu.cn/b/pg/xs/list',
                               data=self._aodata(echo, ['kch', 'kcm', 'jsm', 'function', 'function']), )
         if self._check_response(response, echo=echo):
@@ -374,7 +362,6 @@ class SduBkjws(object):
         else:
             self._unexpected(response)
 
-    @_keep_live
     def get_exam_time(self, xnxq):
         """
         获取考试时间
