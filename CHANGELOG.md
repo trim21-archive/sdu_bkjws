@@ -1,3 +1,14 @@
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/Trim21/sdu_bkjws/compare/v1.0.0...v1.0.1) (2017-07-26)
+
+
+### Bug Fixes
+
+* **exam:** exam time won't overwrite past score ([cd92df8](https://github.com/Trim21/sdu_bkjws/commit/cd92df8))
+* **xnxq:** xnxq filter doesn't worf ([1eaa10e](https://github.com/Trim21/sdu_bkjws/commit/1eaa10e))
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/Trim21/sdu_bkjws/compare/v0.1.2...v1.0.0) (2017-07-03)
 
