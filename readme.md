@@ -7,9 +7,7 @@ pypi:[https://pypi.python.org/pypi/sdu-bkjws/1.0.0](https://pypi.python.org/pypi
 
 (似乎清华用的也是这个系统)
 
-因为所用到的依赖beautifulsoup4不支持python2,所以本项目不会支持python2
-
-## [changelog](https://github.com/Trim21/sdu_bkjws/blob/master/CHANGELOG.md#100-2017-07-03)
+python2未经测试
 
 ## [Docs](https://github.com/Trim21/sdu_bkjws/blob/dev/docs/index.md)
 
@@ -17,6 +15,10 @@ pypi:[https://pypi.python.org/pypi/sdu-bkjws/1.0.0](https://pypi.python.org/pypi
 - 获取教学计划 
 - 添加课程(bkjwxk)
 - 查询课程信息(bkjwxk)
+
+
+## [changelog](https://github.com/Trim21/sdu_bkjws/blob/master/CHANGELOG.md#100-2017-07-03)
+
 
 ## for contributor:
 
