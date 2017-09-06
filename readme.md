@@ -1,9 +1,9 @@
 master: [![Build Status](https://travis-ci.org/Trim21/sdu_bkjws.svg?branch=master)](https://travis-ci.org/Trim21/sdu_bkjws)
 dev: [![Build Status](https://travis-ci.org/Trim21/sdu_bkjws.svg?branch=dev)](https://travis-ci.org/Trim21/sdu_bkjws)
 
-pypi:[https://pypi.python.org/pypi/sdu-bkjws/1.0.0](https://pypi.python.org/pypi/sdu-bkjws/1.0.0)
+pypi:[https://pypi.python.org/pypi/sdu-bkjws](https://pypi.python.org/pypi/sdu-bkjws)
 
-一个用来解析山东大学教务系统的库 包括查成绩 获取课表 查询成绩排名
+一个用来解析山东大学(shandong university)教务系统的库 包括查成绩 获取课表 查询成绩排名
 
 (似乎清华用的也是这个系统)
 
