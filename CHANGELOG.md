@@ -1,3 +1,13 @@
+<a name="1.0.2"></a>
+## [1.0.2](https://github.com/Trim21/sdu_bkjws/compare/v1.0.1...v1.0.2) (2017-09-06)
+
+
+### Bug Fixes
+
+* **login:** website now use md5(password) replace password ([5aebb04](https://github.com/Trim21/sdu_bkjws/commit/5aebb04))
+
+
+
 <a name="1.0.1"></a>
 ## [1.0.1](https://github.com/Trim21/sdu_bkjws/compare/v1.0.0...v1.0.1) (2017-07-26)
 
