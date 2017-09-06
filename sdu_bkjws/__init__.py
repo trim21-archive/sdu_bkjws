@@ -1,9 +1,11 @@
-from bs4 import BeautifulSoup
-import requests
-import time
-from urllib.parse import urlencode
-from functools import wraps
+import hashlib
 import random
+import time
+from functools import wraps
+from urllib.parse import urlencode
+
+import requests
+from bs4 import BeautifulSoup
 
 
 def _keep_live(fn):
@@ -27,6 +29,7 @@ class SduBkjws(object):
         """
         self.student_id = student_id
         self.password = password
+        self.password_md5 = hashlib.md5(self.password.encode('utf-8')).hexdigest()
         self.session = self.login()
         self.post_headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                              'X-Requested-With': 'XMLHttpRequest'}
@@ -95,11 +98,13 @@ class SduBkjws(object):
             self.last_connect = time.time()
             s = requests.session()
             s.get('http://bkjws.sdu.edu.cn')
+
             data = {
                 'j_username': self.student_id,
-                'j_password': self.password
+                'j_password': self.password_md5
             }
             r6 = s.post('http://bkjws.sdu.edu.cn/b/ajaxLogin', data=data)
+            print(r6.text)
             if r6.text == '"success"':
                 return s
             else:
