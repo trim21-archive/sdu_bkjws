@@ -1,7 +1,8 @@
-from setuptools import setup, find_packages
+import json
 import os
 import sys
-import json
+
+from setuptools import setup, find_packages
 
 
 def release(args):
@@ -47,10 +48,20 @@ setup(name='sdu_bkjws',
       license='GPLv3',
       author='Trim21',
       author_email='trim21me@gmail.com',
-      description='sdu bkjws libary',
-      packages=find_packages(),
+      description='sdu bkjws library',
+      packages=find_packages('.', exclude=['*test', 'test*', 'test', '*test*']),
       long_description=open('readme.md', 'r', encoding='utf-8').read(),
       zip_safe=True,
       install_requires=open('requirements.txt', 'r',
-                            encoding='utf-8').read().splitlines()
+                            encoding='utf-8').read().splitlines(),
+      classifiers=(
+          'Intended Audience :: Other Audience',
+          'Natural Language :: Chinese (Simplified)',
+          'Programming Language :: Python',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: Implementation :: CPython',
+          'Programming Language :: Python :: Implementation :: PyPy'
+      ),
       )
