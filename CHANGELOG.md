@@ -1,5 +1,10 @@
-<a name="1.0.5"></a>
-## [1.0.5](https://github.com/Trim21/sdu_bkjws/compare/v1.0.3...v1.0.5) (2017-09-06)
+<a name="1.0.6"></a>
+## [1.0.6](https://github.com/Trim21/sdu_bkjws/compare/v1.0.3...v1.0.6) (2017-09-10)
+
+
+### Bug Fixes
+
+* **build:** include package.json and license ([7bd0c2e](https://github.com/Trim21/sdu_bkjws/commit/7bd0c2e))
 
 
 
