@@ -49,18 +49,20 @@ setup(name='sdu_bkjws',
       author='Trim21',
       author_email='trim21me@gmail.com',
       description='sdu bkjws library',
-      packages=find_packages('.', exclude=['*test', 'test*', 'test', '*test*']),
+      packages=find_packages(
+          '.', exclude=['*test', 'test*', 'test', '*test*']),
       long_description=open('readme.md', 'r', encoding='utf-8').read(),
       zip_safe=True,
       install_requires=open('requirements.txt', 'r',
                             encoding='utf-8').read().splitlines(),
+      package_data={'': ['LICENSE', 'package.json']},
       classifiers=[
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy'
+          'Programming Language :: Python',
+          'Programming Language :: Python :: 3',
+          'Programming Language :: Python :: 3.5',
+          'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: Implementation :: CPython',
+          'Programming Language :: Python :: Implementation :: PyPy'
       ],
       # classifiers=(
       #     'Natural Language :: Chinese (Simplified)',
@@ -71,4 +73,4 @@ setup(name='sdu_bkjws',
       #     'Programming Language :: Python :: Implementation :: CPython',
       #     'Programming Language :: Python :: Implementation :: PyPy'
       # ),
-)
+      )
