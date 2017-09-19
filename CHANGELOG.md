@@ -1,3 +1,13 @@
+<a name="1.0.7"></a>
+## [1.0.7](https://github.com/Trim21/sdu_bkjws/compare/v1.0.6...v1.0.7) (2017-09-19)
+
+
+### Bug Fixes
+
+* **system update:** fix for system update to anti-crawler ([8c7d17c](https://github.com/Trim21/sdu_bkjws/commit/8c7d17c)), closes [#6](https://github.com/Trim21/sdu_bkjws/issues/6)
+
+
+
 <a name="1.0.6"></a>
 ## [1.0.6](https://github.com/Trim21/sdu_bkjws/compare/v1.0.3...v1.0.6) (2017-09-10)
 
