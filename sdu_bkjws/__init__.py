@@ -29,7 +29,8 @@ class SduBkjws(object):
         """
         self.student_id = student_id
         self.password = password
-        self.password_md5 = hashlib.md5(self.password.encode('utf-8')).hexdigest()
+        self.password_md5 = hashlib.md5(
+            self.password.encode('utf-8')).hexdigest()
         self.session = self.login()
         self.post_headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                              'X-Requested-With': 'XMLHttpRequest'}
@@ -57,18 +58,22 @@ class SduBkjws(object):
                    ]
         if xnxq:
             if final_exam:
-                ao_data.append({"name": "ksrwid", "value": "000000005bf6cb6f015bfac609410d4b"})
+                ao_data.append(
+                    {"name": "ksrwid", "value": "000000005bf6cb6f015bfac609410d4b"})
             ao_data.append({"name": "xnxq", "value": xnxq})
 
         for index, value in enumerate(columns):
-            ao_data.append({"name": "mDataProp_{}".format(index), "value": value})
-            ao_data.append({"name": "bSortable_{}".format(index), "value": False})
+            ao_data.append(
+                {"name": "mDataProp_{}".format(index), "value": value})
+            ao_data.append(
+                {"name": "bSortable_{}".format(index), "value": False})
 
         return urlencode({"aoData": ao_data})
 
     @staticmethod
     def _unexpected(value):
-        raise Exception(value, 'unexpected error please create a issue on GitHub')
+        raise Exception(
+            value, 'unexpected error please create a issue on GitHub')
 
     @staticmethod
     def _check_response(response, echo):
@@ -103,7 +108,8 @@ class SduBkjws(object):
                 'j_username': self.student_id,
                 'j_password': self.password_md5
             }
-            r6 = s.post('http://bkjws.sdu.edu.cn/b/ajaxLogin', data=data)
+            r6 = s.post('http://bkjws.sdu.edu.cn/b/ajaxLogin', headers={
+                        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'}, data=data)
             print(r6.text)
             if r6.text == '"success"':
                 return s
@@ -288,8 +294,10 @@ class SduBkjws(object):
     def get_multi_rank_with_query(self, search_list):
         query = "aoData=&dataTableId_length=-1"
         for obj in search_list:
-            lesson_num_long, lesson_num, exam_time = obj['lesson_num_long'], obj['lesson_num_short'], obj['exam_time']
-            query += '&kch_kxh_kssj={}_{}_{}'.format(lesson_num_long, lesson_num, exam_time)
+            lesson_num_long, lesson_num, exam_time = obj[
+                'lesson_num_long'], obj['lesson_num_short'], obj['exam_time']
+            query += '&kch_kxh_kssj={}_{}_{}'.format(
+                lesson_num_long, lesson_num, exam_time)
         return self._get_rank_with_query(query)
 
     @_keep_live
@@ -319,7 +327,8 @@ class SduBkjws(object):
 
     def get_rank_with_query(self, lesson_num_long, lesson_num_short, exam_time):
         query = "aoData=&dataTableId_length=-1"
-        query += '&kch_kxh_kssj={}_{}_{}'.format(lesson_num_long, lesson_num_short, exam_time)
+        query += '&kch_kxh_kssj={}_{}_{}'.format(
+            lesson_num_long, lesson_num_short, exam_time)
         return self._get_rank_with_query(query)[0]
 
     def _get_rank_with_query(self, query):
