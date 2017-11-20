@@ -8,6 +8,13 @@ import requests
 from bs4 import BeautifulSoup
 
 
+class AuthFailure(ValueError):
+    def __init__(self, error):
+        self.error = error
+
+    def __str__(self):
+        return repr(self.error)
+
 def _keep_live(fn):
     @wraps(fn)
     def wrapper(self, *args, **kwargs):
@@ -19,13 +26,15 @@ def _keep_live(fn):
 
 
 class SduBkjws(object):
-    def __init__(self, student_id, password):
+    def __init__(self, student_id, password, user_agent=None):
         """
 
         :param student_id: student_id of jw system
         :type student_id: str
         :param password: password
         :type password: str
+        :param user_agent: User-agent you want to use when requesting the website, default ua is chrome 60.0.3112.113
+        :type user_agent: str
         """
         self.student_id = student_id
         self.password = password
@@ -34,6 +43,11 @@ class SduBkjws(object):
         self.session = self.login()
         self.post_headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                              'X-Requested-With': 'XMLHttpRequest'}
+        if user_agent:
+            self._ua = user_agent
+        else:
+            self._ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+                       'Chrome/60.0.3112.113 Safari/537.36'
 
     @staticmethod
     def _aodata(echo, columns, xnxq=None, final_exam=False):
@@ -109,13 +123,13 @@ class SduBkjws(object):
                 'j_password': self.password_md5
             }
             r6 = s.post('http://bkjws.sdu.edu.cn/b/ajaxLogin', headers={
-                        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36'}, data=data)
-            print(r6.text)
+                'user-agent': self._ua},
+                        data=data)
             if r6.text == '"success"':
                 return s
             else:
                 s.close()
-                raise Exception('username or password error')
+                raise AuthFailure(r6.text)
 
     def get_lesson(self):
         """

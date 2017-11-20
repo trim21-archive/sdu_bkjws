@@ -1,5 +1,5 @@
-<a name="1.0.7"></a>
-## [1.0.7](https://github.com/Trim21/sdu_bkjws/compare/v1.0.6...v1.0.7) (2017-09-19)
+<a name="1.0.8"></a>
+## [1.0.8](https://github.com/Trim21/sdu_bkjws/compare/v1.0.6...v1.0.8) (2017-11-20)
 
 
 ### Bug Fixes

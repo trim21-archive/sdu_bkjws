@@ -64,6 +64,7 @@ setup(name='sdu_bkjws',
           'Programming Language :: Python :: Implementation :: CPython',
           'Programming Language :: Python :: Implementation :: PyPy'
       ],
+<<<<<<< Updated upstream
       # classifiers=(
       #     'Natural Language :: Chinese (Simplified)',
       #     'Programming Language :: Python',
@@ -74,3 +75,6 @@ setup(name='sdu_bkjws',
       #     'Programming Language :: Python :: Implementation :: PyPy'
       # ),
       )
+=======
+)
+>>>>>>> Stashed changes
