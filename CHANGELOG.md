@@ -1,3 +1,13 @@
+<a name="1.0.9"></a>
+## [1.0.9](https://github.com/Trim21/sdu_bkjws/compare/v1.0.8...v1.0.9) (2017-11-20)
+
+
+### Features
+
+* raise AuthFailure when password or student_id can't match ([fc82e9a](https://github.com/Trim21/sdu_bkjws/commit/fc82e9a))
+
+
+
 <a name="1.0.8"></a>
 ## [1.0.8](https://github.com/Trim21/sdu_bkjws/compare/v1.0.6...v1.0.8) (2017-11-20)
 
