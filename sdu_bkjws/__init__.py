@@ -15,6 +15,7 @@ class AuthFailure(ValueError):
     def __str__(self):
         return repr(self.error)
 
+
 def _keep_live(fn):
     @wraps(fn)
     def wrapper(self, *args, **kwargs):
@@ -38,16 +39,16 @@ class SduBkjws(object):
         """
         self.student_id = student_id
         self.password = password
-        self.password_md5 = hashlib.md5(
-            self.password.encode('utf-8')).hexdigest()
-        self.session = self.login()
+        self.password_md5 = hashlib.md5(self.password.encode('utf-8')).hexdigest()
+
         self.post_headers = {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
                              'X-Requested-With': 'XMLHttpRequest'}
+        self._ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' \
+            'Chrome/60.0.3112.113 Safari/537.36'
+
         if user_agent:
             self._ua = user_agent
-        else:
-            self._ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ' \
-                       'Chrome/60.0.3112.113 Safari/537.36'
+        self.session = self.login()
 
     @staticmethod
     def _aodata(echo, columns, xnxq=None, final_exam=False):
@@ -124,7 +125,7 @@ class SduBkjws(object):
             }
             r6 = s.post('http://bkjws.sdu.edu.cn/b/ajaxLogin', headers={
                 'user-agent': self._ua},
-                        data=data)
+                data=data)
             if r6.text == '"success"':
                 return s
             else:
