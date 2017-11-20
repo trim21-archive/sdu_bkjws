@@ -16,6 +16,8 @@ def release(args):
 
         json.dump(package, f, ensure_ascii=False, indent=2)
     os.system("conventional-changelog -p angular -i CHANGELOG.md -s -r 0")
+    if '-a' in args:
+        os.system('git add .')
     if '--commit' in args:
         print('committing')
         os.system('git add CHANGELOG.md package.json')
@@ -57,6 +59,7 @@ setup(name='sdu_bkjws',
                             encoding='utf-8').read().splitlines(),
       package_data={'': ['LICENSE', 'package.json']},
       classifiers=[
+          #     'Natural Language :: Chinese (Simplified)',
           'Programming Language :: Python',
           'Programming Language :: Python :: 3',
           'Programming Language :: Python :: 3.5',
@@ -64,17 +67,4 @@ setup(name='sdu_bkjws',
           'Programming Language :: Python :: Implementation :: CPython',
           'Programming Language :: Python :: Implementation :: PyPy'
       ],
-<<<<<<< Updated upstream
-      # classifiers=(
-      #     'Natural Language :: Chinese (Simplified)',
-      #     'Programming Language :: Python',
-      #     'Programming Language :: Python :: 3',
-      #     'Programming Language :: Python :: 3.5',
-      #     'Programming Language :: Python :: 3.6',
-      #     'Programming Language :: Python :: Implementation :: CPython',
-      #     'Programming Language :: Python :: Implementation :: PyPy'
-      # ),
       )
-=======
-)
->>>>>>> Stashed changes
